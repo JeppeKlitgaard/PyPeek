@@ -1,0 +1,9 @@
+PEEK:
+
+PIL - DONE
+pywin32 - DONE
+scrot - TODO
+imagemagick - TODO
+qt - DONE
+gtk - RAISES WARNING BUT WORKS
+wx - DONE
