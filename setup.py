@@ -6,7 +6,7 @@ setup(
     version=VERSION,
     description="Cross-platform and Cross-backend screenshot library.",
     long_description="Has a lot of backends: pywin32, PIL, gtk, QT, wx, " +
-                     "scrot and imagemagick"
+                     "scrot and imagemagick",
     author="Jeppe Klitgaard",
     author_email="jeppe@dapj.dk",
     url="https://github.com/dkkline/PyPeek",
