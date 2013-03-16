@@ -138,11 +138,13 @@ def peek_qt(fmt="png"):
     from PyQt4.QtGui import QPixmap, QApplication
     from PyQt4.Qt import QBuffer, QIODevice
 
+    print "A"
     app = QApplication(sys.argv)
     buff = QBuffer()
     buff.open(QIODevice.ReadWrite)
     QPixmap.grabWindow(QApplication.desktop().winId()).save(buff, fmt)
 
+    print "B"
     screenshot = Screenshot()
     screenshot.addvalue(buff.data())
     buff.close()
