@@ -189,8 +189,8 @@ def peek_scrot(multimonitor=False):
 
     try:
         subprocess.call((COMMAND, path, arg))
-    except OSError:  # scrot command wasn't found.
-        raise ImportError
+    except OSError as error:  # scrot command wasn't found.
+        raise ImportError(error)
 
     screenshot = _file2screen(path)
 
@@ -209,8 +209,8 @@ def peek_imagemagick(fmt="png"):
 
     try:
         subprocess.call((COMMAND, path))
-    except OSError:  # import command wasn't found.:
-        raise ImportError
+    except OSError as error:  # import command wasn't found.:
+        raise ImportError(error)
 
     screenshot = _file2screen(path)
 
