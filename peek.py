@@ -1,6 +1,7 @@
 from StringIO import StringIO  # Can't use cStringIO, as we cannot subclass it.
-from tempfile import NamedTemporaryFile as TempFile
+from tempfile import gettempdir
 from platform import system
+import os.path
 
 
 class PeekDependencyMissing(Exception):
@@ -52,18 +53,9 @@ def _file2screen(path):
 def _gettempfile():
     """Returns a temporary file path.
     Used for backends that don't support memory-buffers etc."""
-    f = TempFile(prefix="dsktp_cache_framebuff", suffix=".dat")
-    return f.name
-
-
-PEEKERS = []
-if system().lower() == "windows":  # If platform is windows:
-    PEEKERS.append(peek_pywin32)
-    PEEKERS.append(peek_PIL)
-    pass
-
-def peek():
-    pass
+    fn = "dsktp_cache_framebuff.dat"
+    f = os.path.join(gettempdir(), fn)
+    return f
 
 
 ##############################################################################
@@ -223,3 +215,14 @@ def peek_imagemagick(fmt="png"):
     screenshot = _file2screen(path)
 
     return screenshot
+
+
+PEEKERS = []
+if system().lower() == "windows":  # If platform is windows:
+    PEEKERS.append(peek_pywin32)
+    PEEKERS.append(peek_PIL)
+    pass
+
+
+def peek():
+    pass
