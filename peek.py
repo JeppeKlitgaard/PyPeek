@@ -16,6 +16,8 @@ class Screenshot(StringIO):
     """This object represents a screenshot, and has all the ordinary file-like
     methods.
     It also has a save method, give it an output path and it'll save it."""
+    fmt = None
+
     def save(self, outfile):
         with open(outfile, "wb") as f:
             f.write(self.getvalue())
@@ -62,7 +64,7 @@ def _gettempfile():
 
 
 @tryimport("PIL")
-def peek_PIL(fmt="jpeg"):
+def peek_PIL(fmt="png"):
     """Takes a screenshot using PIL."""
     from PIL import ImageGrab
 
@@ -70,6 +72,7 @@ def peek_PIL(fmt="jpeg"):
     screenshot = Screenshot()
     image.save(screenshot, fmt)
     screenshot.seek(0)
+    screenshot.fmt = fmt
 
     return screenshot
 
@@ -104,6 +107,7 @@ def peek_pywin32():
 
     _pywin32capture(path)
     screenshot = _file2screen(path)
+    screenshot.fmt = "bmp"
 
     return screenshot
 
@@ -125,6 +129,7 @@ def peek_gtk():
     path = _gettempfile()
     buff.save(path, "png")
     screenshot = _file2screen(path)
+    screenshot.fmt = "png"
 
     return screenshot
 
@@ -138,20 +143,17 @@ def peek_qt(fmt="png"):
     from PyQt4.QtGui import QPixmap, QApplication
     from PyQt4.Qt import QBuffer, QIODevice
 
-    print "A"
     app = QApplication(sys.argv)
-    print "Q"
     buff = QBuffer()
-    print "C"
     buff.open(QIODevice.ReadWrite)
-    print "D"
     QPixmap.grabWindow(QApplication.desktop().winId()).save(buff, fmt)
 
-    print "B"
     screenshot = Screenshot()
     screenshot.addvalue(buff.data())
     buff.close()
     del app
+
+    screenshot.fmt = fmt
 
     return screenshot
 
@@ -176,6 +178,7 @@ def peek_wx():
     path = _gettempfile()
     bmp.SaveFile(path, wx.BITMAP_TYPE_PNG)
     screenshot = _file2screen(path)
+    screenshot.fmt = "png"
 
     return screenshot
 
@@ -186,6 +189,7 @@ def peek_scrot(multimonitor=False):
     import subprocess
 
     path = _gettempfile()
+    path += ".png"
     COMMAND = "scrot"
     args = []
 
@@ -202,6 +206,7 @@ def peek_scrot(multimonitor=False):
         raise ImportError(error)
 
     screenshot = _file2screen(path)
+    screenshot.fmt = "png"
 
     return screenshot
 
@@ -227,6 +232,7 @@ def peek_imagemagick(fmt="png"):
         raise ImportError(error)
 
     screenshot = _file2screen(path)
+    screenshot.fmt = fmt
 
     return screenshot
 
@@ -235,8 +241,20 @@ PEEKERS = []
 if system().lower() == "windows":  # If platform is windows:
     PEEKERS.append(peek_pywin32)
     PEEKERS.append(peek_PIL)
-    pass
+else:
+    PEEKERS.append(peek_scrot)
+    PEEKERS.append(peek_imagemagick)
+
+PEEKERS.append(peek_qt)
+PEEKERS.append(peek_wx)
+PEEKERS.append(peek_gtk)
 
 
 def peek():
-    pass
+    for peeker in PEEKERS:
+        try:
+            screenshot = peeker()
+            return screenshot
+        except (PeekDependencyMissing, PeekUnableToPeek):
+            continue
+    raise PeekUnableToPeek("Tried all the peekers, but couldn't peek.")
