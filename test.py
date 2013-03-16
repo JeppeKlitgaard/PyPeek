@@ -52,13 +52,13 @@ def test_peek_time(num=10, gc=False, average=True):
     if not unix:
         times["pywin32"] = timeit("peek.peek_pywin32()",
                                   setup=setupstr, number=num)
-
+    print "GTK"
     times["gtk"] = timeit("peek.peek_gtk()",
                           setup=setupstr, number=num)
-
+    print "QT"
     times["qt"] = timeit("peek.peek_qt()",
                          setup=setupstr, number=num)
-
+    print "WX"
     times["wx"] = timeit("peek.peek_wx()",
                          setup=setupstr, number=num)
 
