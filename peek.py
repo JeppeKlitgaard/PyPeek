@@ -140,8 +140,11 @@ def peek_qt(fmt="png"):
 
     print "A"
     app = QApplication(sys.argv)
+    print "Q"
     buff = QBuffer()
+    print "C"
     buff.open(QIODevice.ReadWrite)
+    print "D"
     QPixmap.grabWindow(QApplication.desktop().winId()).save(buff, fmt)
 
     print "B"
