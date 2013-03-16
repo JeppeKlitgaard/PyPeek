@@ -14,31 +14,40 @@ if platform.system().lower() == "windows":
 class PeekTestDefault(unittest.TestCase):
     @unittest.skipIf(unix, "This peeker only works on Windows.")
     def test_peek_PIL(self):
-        peek.peek_PIL()
+        s = peek.peek_PIL()
+        self.assertIsNotNone(s.fmt)
 
     @unittest.skipIf(unix, "This peeker only works on Windows.")
     def test_peek_pywin32(self):
-        peek.peek_pywin32()
+        s = peek.peek_pywin32()
+        self.assertIsNotNone(s.fmt)
 
     def test_peek_gtk(self):
-        peek.peek_gtk()
+        s = peek.peek_gtk()
+        self.assertIsNotNone(s.fmt)
 
     def test_peek_qt(self):
-        peek.peek_qt()
+        s = peek.peek_qt()
+        self.assertIsNotNone(s.fmt)
 
     def test_peek_wx(self):
-        peek.peek_wx()
+        s = peek.peek_wx()
+        self.assertIsNotNone(s.fmt)
 
     @unittest.skipIf(not unix, "This peeker only works on unix.")
     def test_peek_scrot(self):
-        peek.peek_scrot()
+        s = peek.peek_scrot()
+        self.assertIsNotNone(s.fmt)
 
     @unittest.skipIf(not unix, "This peeker only works on unix.")
     def test_peek_imagemagick(self):
-        peek.peek_imagemagick()
+        s = peek.peek_imagemagick()
+        self.assertIsNotNone(s.fmt)
 
 
-def test_peek_time(num=10, gc=False, average=True):
+def test_peek_time(num=10, gc=False, average=True, skip_qt=False):
+    # QT sometimes causes a segmentation fault on some OSs, but only when used
+    # with timeit.
     setupstr = ""
     if gc:
         setupstr += "gc.enable();"
@@ -52,13 +61,14 @@ def test_peek_time(num=10, gc=False, average=True):
     if not unix:
         times["pywin32"] = timeit("peek.peek_pywin32()",
                                   setup=setupstr, number=num)
-    print "GTK"
+
     times["gtk"] = timeit("peek.peek_gtk()",
                           setup=setupstr, number=num)
-    print "QT"
-    times["qt"] = timeit("peek.peek_qt()",
-                         setup=setupstr, number=num)
-    print "WX"
+
+    if not skip_qt:
+        times["qt"] = timeit("peek.peek_qt()",
+                             setup=setupstr, number=num)
+
     times["wx"] = timeit("peek.peek_wx()",
                          setup=setupstr, number=num)
 
@@ -84,6 +94,6 @@ if __name__ == "__main__":
     sleep(3)
 
     print("\n###TIMES###\n")
-    times = test_peek_time(num=1)
+    times = test_peek_time()
     for v in sorted(times, key=times.get):
         print "%-10s: %s" % (v, times[v])
