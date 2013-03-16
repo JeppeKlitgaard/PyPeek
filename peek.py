@@ -182,13 +182,13 @@ def peek_scrot(multimonitor=False):
 
     path = _gettempfile()
     COMMAND = "scrot"
-    arg = ""
+    args = []
 
     if multimonitor:
-        arg = "--multidisp"
+        args.append("--multidisp")
 
     try:
-        subprocess.call((COMMAND, path, arg))
+        subprocess.call((COMMAND, *args, path))
     except OSError as error:  # scrot command wasn't found.
         raise ImportError(error)
 
@@ -205,11 +205,12 @@ def peek_imagemagick(fmt="png"):
     path = _gettempfile()
     path += "." + fmt
 
-    COMMAND = "import -window root"
+    COMMAND = "import"
+    args = ["-window",  "root"]
 
     try:
-        subprocess.call((COMMAND, path))
-    except OSError as error:  # import command wasn't found.:
+        subprocess.call((COMMAND, *args, path))
+    except OSError as error:  # import command wasn't found.
         raise ImportError(error)
 
     screenshot = _file2screen(path)
