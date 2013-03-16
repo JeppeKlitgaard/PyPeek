@@ -3,6 +3,8 @@ from tempfile import gettempdir
 from platform import system
 import os.path
 
+VERSION = 1
+
 
 class PeekDependencyMissing(Exception):
     pass

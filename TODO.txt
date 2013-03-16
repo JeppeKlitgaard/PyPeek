@@ -2,8 +2,8 @@ PEEK:
 
 PIL - DONE
 pywin32 - DONE
-scrot - NEEDS TESTING
-imagemagick - NEEDS TESTING
+scrot - DONE
+imagemagick - DONE
 qt - DONE
 gtk - RAISES (HARMLESS) WARNING BUT WORKS
 wx - DONE
