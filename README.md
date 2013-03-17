@@ -20,4 +20,4 @@ Tutorial
 
 Similar projects
 ================
-[pyscreenshot](https://github.com/ponty/pyscreenshot)
+* [pyscreenshot](https://github.com/ponty/pyscreenshot)
